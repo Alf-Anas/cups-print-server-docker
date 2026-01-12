@@ -10,9 +10,11 @@ services:
     privileged: true
     restart: unless-stopped
     volumes:
+      - cups_etc:/etc/cups
       - cups_var:/var/spool/cups
       - cups_logs:/var/log/cups
 
 volumes:
+  cups_etc:
   cups_var:
   cups_logs:
