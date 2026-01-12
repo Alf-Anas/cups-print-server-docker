@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  cups:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cups
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - cups_etc:/etc/cups
+      - cups_var:/var/spool/cups
+      - cups_logs:/var/log/cups
+
+volumes:
+  cups_etc:
+  cups_var:
+  cups_logs:
