@@ -12,11 +12,18 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Allow remote access to CUPS Web UI
-RUN sed -i 's/Listen localhost:631/Port 631/' /etc/cups/cupsd.conf \
-    && sed -i 's/<Location \/>/<Location \/>\
-    \n  Allow All/' /etc/cups/cupsd.conf \
-    && sed -i 's/<Location \/admin>/<Location \/admin>\
-    \n  Allow All/' /etc/cups/cupsd.conf
+RUN sed -i 's/Listen localhost:631/Port 631/' /etc/cups/cupsd.conf && \
+    sed -i 's/Require local/Allow All/g' /etc/cups/cupsd.conf && \
+    sed -i 's/<Location \/>/<Location \/>\
+\n  Order allow,deny\
+\n  Allow All/' /etc/cups/cupsd.conf && \
+    sed -i 's/<Location \/admin>/<Location \/admin>\
+\n  Order allow,deny\
+\n  Allow All/' /etc/cups/cupsd.conf && \
+    sed -i 's/<Location \/admin\/conf>/<Location \/admin\/conf>\
+\n  Order allow,deny\
+\n  Allow All/' /etc/cups/cupsd.conf
+
 
 EXPOSE 631
 
