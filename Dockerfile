@@ -15,8 +15,6 @@ COPY cupsd.conf /etc/cups/cupsd.conf
 
 EXPOSE 631
 
-CMD service dbus start && \
-    service avahi-daemon start && \
-    service cups start && \
-    touch /var/log/cups/error_log && \
-    tail -f /var/log/cups/error_log
+CMD dbus-daemon --system --fork && \
+    avahi-daemon --no-drop-root --no-chroot & \
+    cupsd -f
