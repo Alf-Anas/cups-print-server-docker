@@ -8,14 +8,15 @@ RUN apt-get update && apt-get install -y \
     cups-filters \
     printer-driver-gutenprint \
     dbus \
+    avahi-daemon \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure CUPS for remote access (CUPS 2.4 safe)
-RUN sed -i 's/^Listen localhost:631/Port 631/' /etc/cups/cupsd.conf && \
-    sed -i 's/^WebInterface No/WebInterface Yes/' /etc/cups/cupsd.conf
+COPY cupsd.conf /etc/cups/cupsd.conf
 
 EXPOSE 631
 
 CMD service dbus start && \
+    service avahi-daemon start && \
     service cups start && \
+    touch /var/log/cups/error_log && \
     tail -f /var/log/cups/error_log
