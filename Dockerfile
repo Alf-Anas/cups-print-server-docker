@@ -10,12 +10,9 @@ RUN apt-get update && apt-get install -y \
     dbus \
     && rm -rf /var/lib/apt/lists/*
 
-# Allow Remote Access
-RUN sed -i 's/Listen localhost:631/Port 631/' /etc/cups/cupsd.conf && \
-    sed -i 's/Require local/Require all granted/g' /etc/cups/cupsd.conf && \
-    sed -i '/<Location \/>/,/<\/Location>/c\<Location />\n  Require all granted\n</Location>' /etc/cups/cupsd.conf && \
-    sed -i '/<Location \/admin>/,/<\/Location>/c\<Location /admin>\n  Require all granted\n</Location>' /etc/cups/cupsd.conf && \
-    sed -i '/<Location \/admin\/conf>/,/<\/Location>/c\<Location /admin/conf>\n  Require all granted\n</Location>' /etc/cups/cupsd.conf
+# Configure CUPS for remote access (CUPS 2.4 safe)
+RUN sed -i 's/^Listen localhost:631/Port 631/' /etc/cups/cupsd.conf && \
+    sed -i 's/^WebInterface No/WebInterface Yes/' /etc/cups/cupsd.conf
 
 EXPOSE 631
 
